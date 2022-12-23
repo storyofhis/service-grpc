@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"time"
 
@@ -14,18 +15,17 @@ const (
 )
 
 func main() {
-
 	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
 		log.Fatalf("did not connect : %v", err)
 		return
 	}
 	defer conn.Close()
-
 	c := pb.NewUserManagementClient(conn)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
+
 	var new_users = make(map[string]uint32)
 	new_users["Alice "] = 43
 	new_users["Bob"] = 30
@@ -45,4 +45,11 @@ func main() {
 			r.GetName(), r.GetAge(), r.GetId(),
 		)
 	}
+	params := &pb.GetUsersParams{}
+	r, err := c.GetUsers(ctx, params)
+	if err != nil {
+		log.Fatalf("could not retrieve user: %v", err)
+	}
+	log.Print("\nUSER LIST: \n")
+	fmt.Printf("User : %v\n", r.GetUsers())
 }

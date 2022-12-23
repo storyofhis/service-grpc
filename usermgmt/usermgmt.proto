@@ -4,6 +4,7 @@ package usermgmt;
 option go_package = "github.com/storyofhis/basic-grpc;basic_grpc";
 service UserManagement {
     rpc CreateNewUser (NewUser) returns (User) {}
+    rpc GetUsers(GetUsersParams) returns(UserList){}
 }
 message NewUser {
     string name = 1;
@@ -16,3 +17,10 @@ message User {
     int32 id = 3; 
 }
   
+message GetUsersParams{
+    
+}
+
+message UserList{
+    repeated User users = 1;
+}
